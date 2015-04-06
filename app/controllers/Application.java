@@ -11,6 +11,8 @@ import models.*;
 
 public class Application extends Controller {
 
+    static Form<User> userForm = Form.form(User.class);
+
     /** indexへのレンダリング */
     public static Result index() {
         return ok(index.render());
@@ -23,12 +25,12 @@ public class Application extends Controller {
 	if(user.isEmpty()) {
 	    return redirect(routes.Application.first());    
         }
-	return ok(login.render(Form.form(User.class)));
+	return ok(login.render(userForm));
     }
 
     /** 最初の画面 */
     public static Result first() {
-        return ok(first.render(Form.form(User.class)));
+        return ok(first.render(userForm));
     }
 
     /** 新規ユーザ追加 */
@@ -41,7 +43,7 @@ public class Application extends Controller {
      * 問題なければセッションにname記録
      */
     public static Result authenticate() {
-        Form<User> loginForm = Form.form(User.class).bindFromRequest();
+        Form<User> loginForm = userForm.bindFromRequest();
 	if(loginForm.hasErrors()) {
 	    return badRequest(login.render(loginForm));
 	}
