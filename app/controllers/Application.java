@@ -3,6 +3,7 @@ package controllers;
 import play.*;
 import play.mvc.*;
 import play.data.*;
+import java.util.*;
 
 import views.html.*;
 
@@ -17,7 +18,22 @@ public class Application extends Controller {
 
     /** loginへのレンダリング、引数でフォームのインスタンス生成 */
     public static Result login() {
+	List<User> user = null;
+        user = User.find.all();
+	if(user.isEmpty()) {
+	    return redirect(routes.Application.first());    
+        }
 	return ok(login.render(Form.form(User.class)));
+    }
+
+    /** 最初の画面 */
+    public static Result first() {
+        return ok(first.render(Form.form(User.class)));
+    }
+
+    /** 新規ユーザ追加 */
+    public static Result addUser(){
+        return TODO;
     }
 
     /**
