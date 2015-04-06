@@ -1,0 +1,14 @@
+@(loginForm: Form[User])
+
+@import helper._
+
+@main("login sample") {
+    <h1>ログインサンプル</h1>
+
+    @form(routes.Application.authenticate) {
+        @inputText(loginForm("name"))
+	@inputPassword(loginForm("password"))
+
+	<button type="submit">ログイン</button>
+    }
+}
