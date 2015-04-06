@@ -35,7 +35,15 @@ public class Application extends Controller {
 
     /** 新規ユーザ追加 */
     public static Result addUser(){
-        return TODO;
+        Form<User> createForm = userForm.bindFromRequest();
+	if(createForm.hasErrors()){
+	    return badRequest(login.render(createForm));
+	}
+        User.create(createForm.get());
+
+        session().clear();
+	session("name",createForm.get().name);
+	return redirect(routes.Application.index());
     }
 
     /**
