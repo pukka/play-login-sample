@@ -12,8 +12,10 @@ import models.*;
 public class Application extends Controller {
 
     static Form<User> userForm = Form.form(User.class);
+    static Form<Login> loginForm = Form.form(Login.class);
 
     /** indexへのレンダリング */
+    @Security.Authenticated(Secured.class)
     public static Result index() {
         return ok(index.render());
     }
@@ -25,7 +27,7 @@ public class Application extends Controller {
 	if(user.isEmpty()) {
 	    return redirect(routes.Application.first());    
         }
-	return ok(login.render(userForm));
+	return ok(login.render(loginForm));
     }
 
     /** 最初の画面 */
@@ -37,7 +39,7 @@ public class Application extends Controller {
     public static Result addUser(){
         Form<User> createForm = userForm.bindFromRequest();
 	if(createForm.hasErrors()){
-	    return badRequest(login.render(createForm));
+	    return badRequest(first.render(createForm));
 	}
         User.create(createForm.get());
 
@@ -51,12 +53,29 @@ public class Application extends Controller {
      * 問題なければセッションにname記録
      */
     public static Result authenticate() {
-        Form<User> loginForm = userForm.bindFromRequest();
-	if(loginForm.hasErrors()) {
-	    return badRequest(login.render(loginForm));
+        Form<Login> filledForm = loginForm.bindFromRequest();
+	if(filledForm.hasErrors()) {
+	    return badRequest(login.render(filledForm));
 	}
 	session().clear();
-	session("name",loginForm.get().name);
+	session("name",filledForm.get().name);
 	return redirect(routes.Application.index());
+    }
+
+    public static Result logout() {
+        session().clear();
+        return redirect(routes.Application.login());
+    }
+
+    public static class Login {
+        public String name;
+	public String password;
+
+	public String validate() {
+	    if (User.authenticate(name, password) == null) {
+                return "パスワード、またはユーザ名が有効ではありません。";
+            }
+	    return null;
+	}
     }
 }
