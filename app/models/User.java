@@ -24,17 +24,6 @@ public class User extends Model {
         Long.class, User.class
     );
 
-
-    /** 
-     * 特別なplayのメソッド
-     * フォームのバリデーション適用
-    public String validate(){
-        if(authenticate(name, password)){
-            return null;
-        }
-        return "有効なパスワードとユーザ名ではありません。";
-    }
-*/
     public static void create(User user){
         user.save();
     }
