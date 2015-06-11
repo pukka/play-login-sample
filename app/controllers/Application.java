@@ -25,7 +25,7 @@ public class Application extends Controller {
 	List<User> user = null;
         user = User.find.all();
 	if(user.isEmpty()) {
-	    return redirect(routes.Application.first());    
+	    return redirect(routes.Application.first());
         }
 	return ok(login.render(loginForm));
     }
@@ -34,7 +34,10 @@ public class Application extends Controller {
     public static Result first() {
         return ok(first.render(userForm));
     }
-
+    @Security.Authenticated(Secured.class)
+    public static Result odd() {
+        return ok(odd.render(userForm));
+    }
     /** 新規ユーザ追加 */
     public static Result addUser(){
         Form<User> createForm = userForm.bindFromRequest();
@@ -47,6 +50,19 @@ public class Application extends Controller {
 	session("name",createForm.get().name);
 	return redirect(routes.Application.index());
     }
+    /** ユーザ追加 */
+    public static Result newUser(){
+        Form<User> createForm = userForm.bindFromRequest();
+	if(createForm.hasErrors()){
+	    return badRequest(odd.render(createForm));
+	}
+        User.create(createForm.get());
+
+        session().clear();
+	session("name",createForm.get().name);
+	return redirect(routes.Application.odd());
+    }
+
 
     /**
      * フォームのバインド後、エラーがあればbadRequest

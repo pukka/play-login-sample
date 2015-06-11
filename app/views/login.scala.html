@@ -10,9 +10,12 @@
         </p>
     }
     @form(routes.Application.authenticate) {
-        @inputText(loginForm("name"))
+    @inputText(loginForm("name"))
 	@inputPassword(loginForm("password"))
 
 	<button type="submit">ログイン</button>
+    }
+    @form(routes.Application.newUser){
+    <button type="submit">新規</button>
     }
 }
