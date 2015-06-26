@@ -16,12 +16,12 @@ public class Application extends Controller {
 
     /** indexへのレンダリング */
     @Security.Authenticated(Secured.class)
-    public static Result index() {
+    public Result index() {
         return ok(index.render());
     }
 
     /** loginへのレンダリング、引数でフォームのインスタンス生成 */
-    public static Result login() {
+    public Result login() {
 	List<User> user = null;
         user = User.find.all();
 	if(user.isEmpty()) {
@@ -31,12 +31,12 @@ public class Application extends Controller {
     }
 
     /** 最初の画面 */
-    public static Result first() {
+    public Result first() {
         return ok(first.render(userForm));
     }
 
     /** 新規ユーザ追加 */
-    public static Result addUser(){
+    public Result addUser(){
         Form<User> createForm = userForm.bindFromRequest();
 	if(createForm.hasErrors()){
 	    return badRequest(first.render(createForm));
@@ -52,7 +52,7 @@ public class Application extends Controller {
      * フォームのバインド後、エラーがあればbadRequest
      * 問題なければセッションにname記録
      */
-    public static Result authenticate() {
+    public Result authenticate() {
         Form<Login> filledForm = loginForm.bindFromRequest();
 	if(filledForm.hasErrors()) {
 	    return badRequest(login.render(filledForm));
@@ -62,7 +62,7 @@ public class Application extends Controller {
 	return redirect(routes.Application.index());
     }
 
-    public static Result logout() {
+    public Result logout() {
         session().clear();
         return redirect(routes.Application.login());
     }
