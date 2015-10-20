@@ -3,7 +3,56 @@
 @import helper._
 
 @main("login sample") {
-    <h1>ログインサンプル</h1>
+<script>
+  function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    if (response.status === 'connected') {
+      testAPI();
+    } else if (response.status === 'not_authorized') {
+      document.getElementById('status').innerHTML = 'Please log ' + 'into this app.';
+    } else {
+      document.getElementById('status').innerHTML = 'Please log ' + 'into Facebook.';
+    }
+  }
+
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '925406260859000',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v2.3'
+    });
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  function testAPI() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+      console.log('Successful login for: ' + response.name);
+      document.getElementById('status').innerHTML =
+      'Thanks for logging in, ' + response.name + '!<br>' + 'Email:' + JSON.stringify(response);
+    });
+  }
+</script>
+  <h1>ログインサンプル</h1>
     @if(loginForm.hasGlobalErrors) {
         <p class="error">
 	    @loginForm.globalError.message
@@ -15,4 +64,16 @@
 
 	<button type="submit">ログイン</button>
     }
+
+  <div id="login">
+    <p><button onClick="loginUser();">Facebookでログイン</button></p>
+  </div>
+  <div id="logout">
+    <p><button  onClick="FB.logout();">Facebookからログアウト</button></p>
+  </div>
+  <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+  </fb:login-button>
+
+  <div id="status">
+  </div>
 }
