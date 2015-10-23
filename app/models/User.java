@@ -8,12 +8,12 @@ import com.avaje.ebean.Model;
 import play.data.format.*;
 import play.data.validation.*;
 
-@Entity 
+@Entity
 public class User extends Model {
     @Id
     @Constraints.Min(10)
     public Long id;
-    
+
     @Constraints.Required
     public String name;
 
@@ -28,7 +28,6 @@ public class User extends Model {
     public static void create(User user){
         user.save();
     }
-
     public static User authenticate(String name, String password){
         return find.where().eq("name", name).eq("password", password).findUnique();
     }

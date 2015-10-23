@@ -24,29 +24,46 @@ public class Application extends Controller {
     public Result login() {
 	List<User> user = null;
         user = User.find.all();
-	if(user.isEmpty()) {
-	    return redirect(routes.Application.first());    
+	    if(user.isEmpty()) {
+	        return redirect(routes.Application.first());
         }
-	return ok(login.render(loginForm));
+	    return ok(login.render(loginForm));
     }
 
     /** 最初の画面 */
     public Result first() {
         return ok(first.render(userForm));
     }
-
+    @Security.Authenticated(Secured.class)
+    public static Result odd() {
+        return ok(odd.render(userForm));
+    }
     /** 新規ユーザ追加 */
     public Result addUser(){
         Form<User> createForm = userForm.bindFromRequest();
-	if(createForm.hasErrors()){
-	    return badRequest(first.render(createForm));
-	}
+	    if(createForm.hasErrors()){
+	        return badRequest(first.render(createForm));
+	    }
         User.create(createForm.get());
 
         session().clear();
-	session("name",createForm.get().name);
-	return redirect(routes.Application.index());
+	    session("name",createForm.get().name);
+	    return redirect(routes.Application.index());
     }
+
+    /** ユーザ追加 */
+    public static Result newUser(){
+        Form<User> createForm = userForm.bindFromRequest();
+	    if(createForm.hasErrors()){
+	        return badRequest(odd.render(createForm));
+	    }
+        User.create(createForm.get());
+
+        session().clear();
+	    session("name",createForm.get().name);
+	    return redirect(routes.Application.odd());
+    }
+
 
     /**
      * フォームのバインド後、エラーがあればbadRequest
@@ -57,9 +74,9 @@ public class Application extends Controller {
 	if(filledForm.hasErrors()) {
 	    return badRequest(login.render(filledForm));
 	}
-	session().clear();
-	session("name",filledForm.get().name);
-	return redirect(routes.Application.index());
+	    session().clear();
+	    session("name",filledForm.get().name);
+	    return redirect(routes.Application.index());
     }
 
     public Result logout() {
@@ -69,13 +86,13 @@ public class Application extends Controller {
 
     public static class Login {
         public String name;
-	public String password;
+	    public String password;
 
 	public String validate() {
 	    if (User.authenticate(name, password) == null) {
                 return "パスワード、またはユーザ名が有効ではありません。";
             }
 	    return null;
-	}
+	    }
     }
 }

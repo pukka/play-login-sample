@@ -7,6 +7,8 @@ GET     /                           controllers.Application.index()
 GET     /login                      controllers.Application.login()
 GET     /logout                     controllers.Application.logout()
 GET     /first                      controllers.Application.first()
+GET     /newUser		    controllers.Application.newUser()
+POST    /odd                        controllers.Application.odd()
 POST    /login                      controllers.Application.authenticate()
 POST    /addUser                    controllers.Application.addUser()
 

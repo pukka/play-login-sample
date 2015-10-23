@@ -59,12 +59,11 @@
         </p>
     }
     @form(routes.Application.authenticate) {
-        @inputText(loginForm("name"))
+    @inputText(loginForm("name"))
 	@inputPassword(loginForm("password"))
 
 	<button type="submit">ログイン</button>
     }
-
   <div id="login">
     <p><button onClick="loginUser();">Facebookでログイン</button></p>
   </div>
@@ -76,4 +75,7 @@
 
   <div id="status">
   </div>
+    @form(routes.Application.newUser){
+    <button type="submit">新規</button>
+    }
 }
